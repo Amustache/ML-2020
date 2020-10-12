@@ -1,5 +1,6 @@
 import numpy as np
 from numpy.linalg import inv
+from tqdm import tqdm
 
 def mini_batch(y, tx, size, num):
     N = len(y)
@@ -33,7 +34,7 @@ def mse_loss(y, tx, w):
 def least_square_GD(y, tx, initial_w, max_iters, gamma):
     """ Linear regression using gradient descent. """
     w = initial_w
-    for i in range(max_iters):
+    for i in tqdm(range(max_iters)):
         # Compute error vector
         e = y-tx.dot(w)
         # Compute gradient
@@ -44,7 +45,7 @@ def least_square_GD(y, tx, initial_w, max_iters, gamma):
         loss = mse_loss(y, tx, w)
     return w, loss
 
-def least_square_SGD(y, tx initial_w, max_iters, gamma):
+def least_square_SGD(y, tx, initial_w, max_iters, gamma):
     """ Linear regression using stochastic gradient descent. """
     return w, loss
 
