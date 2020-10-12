@@ -13,9 +13,6 @@ def read_csv(data_path):
 
     # Convert string prediction to binary 0 or 1
     y = np.ones(len(y_str))
-    print(y_str[::10])
     y[np.where(y_str=='b')] = 0
-
-    print(y[::10])
 
     return y, x, ids 

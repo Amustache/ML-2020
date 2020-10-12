@@ -39,7 +39,7 @@ def least_square_GD(y, tx, initial_w, max_iters, gamma):
         # Compute gradient
         grad = (-1/len(y)) * tx.transpose().dot(e)
         # Compute w(t+1)
-        w = w - gamme*grad
+        w = w - gamma*grad
         # Compute loss
         loss = mse_loss(y, tx, w)
     return w, loss
