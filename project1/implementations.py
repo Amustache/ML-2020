@@ -6,17 +6,11 @@ def mini_batch(y, tx, size, num):
     N = len(y)
     # Get random indices
     batch_ind = np.random.permutation(np.arange(N))
-    print("batch_ind")
-    print(batch_ind)
-    batch_ind = batch_ind[:size]
-    print("batch_ind")
-    print(batch_ind)
-    for i in batch_ind:
-        print(i)
-        batch_y = y[i]
-    print(y[batch_ind])
-    print(batch_y)
-    print(tx[batch_ind])
+    for batch_id in range(num):
+        s_id = int(batch_id*size)
+        e_id = int(s_id+size)
+        ids = batch_ind[s_id:e_id]
+        yield y[ids], tx[ids]
 
 def mae_loss(y, tx, w):
     """ Compute the MAE loss. """
@@ -47,6 +41,16 @@ def least_square_GD(y, tx, initial_w, max_iters, gamma):
 
 def least_square_SGD(y, tx, initial_w, max_iters, gamma):
     """ Linear regression using stochastic gradient descent. """
+    w = initial_w
+    for i in tqdm(range(max_iters)):
+        size = len(y)/20
+        grad = 0
+        num = 5
+        for b_y, b_tx in mini_batch(y, tx, size, num):
+            e = b_y-b_tx.dot(w)
+            grad += (-1/len(b_y)) * b_tx.transpose().dot(e)
+        w = w - gamma*grad
+        loss = mse_loss(y, tx, w)
     return w, loss
 
 def least_squares(y, tx):
