@@ -11,16 +11,17 @@ from metrics import *
 def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=None):
     """ Model is using ridge regression with different parameters and auto tunning"""
     # Data preprocessing
-    print("Data preprocessing...")
+    print("Data preprocessing.")
     print("-" * 10)
 
     # Standardization
-    tX_stand, tx_mean, tx_std = standardize(tX)
+    # tX_stand, tx_mean, tx_std = standardize(tX)
+    tX_stand = standardizeValues(tX)
 
     # Replacing odd (outliers) values with mean, column-wize
-    # data = invalidToMean(data)
-    for i in range(data.shape[1]):
-        data[:, i][np.where(tX_stand[:, i] == -999)] = tx_mean[i]
+    tX_stand = invalidToMean(tX_stand)
+    # for i in range(tX_stand.shape[1]):
+    #     tX_stand[:, i][np.where(tX_stand[:, i] == -999)] = tx_mean[i]
 
     # Tunning
     if not lambda_:
@@ -31,7 +32,10 @@ def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=Non
 
     # Save weights
     if save:
-        pickle.dump(weights, open(os.path.join(save, "weights_{}.p".format(str(datetime.now())), "wb")))
+        weight_path = os.path.join(save, "weights_{}.p".format(str(datetime.now())), "wb")
+        print("Saving weights to {}.".format(weight_path))
+        print("-" * 10)
+        pickle.dump(weights, open(weight_path))
 
     return weights, loss
 
@@ -47,21 +51,26 @@ if __name__ == "__main__":
 
     # Import data
     print("Importing data from {}.".format(train_path))
+    print("-" * 10)
     y, tX, ids = load_csv_data(train_path)
 
     # Generate model
-    print("Generating model:")
+    print("Generating model.")
+    print("-" * 10)
     weights, loss = model(y, tX)
 
     # Generating predictions
-    print ("Generating predictions for {}...".format(test_path))
-    _, tX_test, ids_test = load_csv_data(test_path)
+    print ("Generating predictions for {}.".format(test_path))
+    print("-" * 10)
+    y_test, tX_test, ids_test = load_csv_data(test_path)
     y_pred = predict_labels(weights, tX_test)
 
     # Metrics
-    F1, accuracy = metrics(y, y_pred)
+    F1, accuracy = metrics(y_test, y_pred)
     print("F1-score: {}, accuracy: {}.".format(F1, accuracy))
+    print("-" * 10)
 
     # Export predictions
     print("Exporting predictions to {}.".format(output_path))
+    print("-" * 10)
     create_csv_submission(ids_test, y_pred, output_path)

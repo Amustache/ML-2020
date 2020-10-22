@@ -69,7 +69,7 @@ def mse_loss(y, tx, w):
     e = y - tx.dot(w)
     return np.sum(np.square(e))/(2*len(y))
 
-def cross_validate_ridge_regression(y, tx, k, l_st, l_en, l_space):
+def cross_validate_ridge_regression(y, tx, k, l_st, l_en, l_space, show=False):
     """ K-fold cross-validation for selecting lambda for ridge regression.
     
     Args:
@@ -103,10 +103,11 @@ def cross_validate_ridge_regression(y, tx, k, l_st, l_en, l_space):
         if mean_loss < min_loss:
             min_loss = mean_loss
             best_l = l
-    plt.semilogx(tested_lambda, tested_loss, "*r")
+    if show:
+        plt.semilogx(tested_lambda, tested_loss, "*r")
     return best_l
 
-def cross_validate_reg_logistic_regression(y, tx, initial_w, max_iters, gamma, k, l_st, l_en, l_space):
+def cross_validate_reg_logistic_regression(y, tx, initial_w, max_iters, gamma, k, l_st, l_en, l_space, show=False):
     """ K-fold cross-validation for selecting lambda for regularized logistic regression.
     
     Args:
@@ -143,7 +144,8 @@ def cross_validate_reg_logistic_regression(y, tx, initial_w, max_iters, gamma, k
         if mean_loss < min_loss:
             min_loss = mean_loss
             best_l = l
-    plt.semilogx(tested_lambda, tested_loss, "*r")
+    if show:
+        plt.semilogx(tested_lambda, tested_loss, "*r")
     return best_l
 
 """ Requested ML methods. """
