@@ -26,7 +26,23 @@ def standardizeValues(tx):
     std_dev = np.std(res, axis=0)
     std_tx = np.divide(np.subtract(res, means),std_dev)
     return std_tx
-    
+
+
+def standardize(x):
+    """ Standardize the original data set.
+
+    Args:
+        x: Data set.
+    Return:
+        Standardized data set.
+    """
+    mean_x = np.mean(x, axis=0)
+    x = x - mean_x
+    std_x = np.std(x, axis=0)
+    x = x / std_x
+    return x, mean_x, std_x
+
+
 def invalidToMean(tx):
     """ Change all -999 values with the mean of valid values of same column. """
     _,N = tx.shape
