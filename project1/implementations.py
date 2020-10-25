@@ -130,13 +130,16 @@ def cross_validate_reg_logistic_regression(y, tx, initial_w, max_iters, gamma, k
     best_l = 0
     tested_loss = []
     tested_lambda = []
+    y_log = y.copy()
+    y_log[y_log == -1] = 0
+    w = initial_w
     for l in tqdm(np.logspace(l_st, l_en, num=l_space)):
         tmp_loss = []
         for i in range(len(y_train_set)):
             b_y = y_train_set[i]
             b_tx = tx_train_set[i]
-            w, _ = reg_logistic_regression(b_y, b_tx, l, initial_w, max_iters, gamma)
-            tmp_loss.append(mse_loss(y_test, tx_test, w))
+            w, reg_loss = reg_logistic_regression(b_y, b_tx, l, initial_w, max_iters, gamma)
+            tmp_loss.append(reg_loss)
         mean_loss = np.mean(tmp_loss)
         # Loss and lambda used for plot.
         tested_loss.append(mean_loss)
@@ -194,18 +197,34 @@ def logistic_function(z):
     """ The logistic function sigma. """
     return np.exp(z)/(1+np.exp(z))
 
+def logistic_loss(y, tx, w):
+    M, N = tx.shape
+    return (1/M)*np.sum(np.subtract(np.multiply(-y, np.log(logistic_function((tx.dot(w)))))), np.multiply(np.subtract(1, y), np.log(np.subtract(1, logistic_function(tx.dot(w))))))
+
+def logistic_regularized_loss(y, tx, w, lambda_):
+    M, N = tx.shape
+    return (1/M)*np.sum(np.subtract(np.multiply(-y, np.log(logistic_function((tx.dot(w)))))), np.multiply(np.subtract(1, y), np.log(np.subtract(1, logistic_function(tx.dot(w)))))) + (lambda_/(2*M))*np.sum(np.power(w, 2))
+
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
     """ Logistic regression using gradient descent or SGD. """
+    y_log = y.copy()
+    y_log[y_log == -1] = 0
+    w = initial_w
+    M, N = tx.shape
     for i in range(max_iters):
-        loss = np.sum(np.log(1 + np.exp(tx.dot(w))) - y * (tx.dot(w)))
-        grad = tx.transpose().dot(logistic_function(tx.dot(x))-y)
+        grad = np.divide(tx.transpose().dot(np.subtract(logistic_function(tx.dot(w)), y_log)), M)
         w = w - gamma*grad
+    loss = logistic_loss(y, tx, w)
     return w, loss
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     """ Regularized logistic regression using gradient descent or SGD. """
+    y_log = y.copy()
+    y_log[y_log == -1] = 0
+    w = initial_w
+    M, N = tx.shape
     for i in range(max_iters):
-        loss = np.sum(np.log(1 + np.exp(tx.dot(w))) - y * (tx.dot(w))) + (lambda_/2) * np.sum(np.power(np.linalg.norm(w), 2))
-        grad = tx.transpose().dot(logistic_function(tx.dot(x))-y) + lambda_ * np.sum(np.linalg.norm(w))
+        grad = np.divide(tx.transpose().dot(logistic_function(tx.dot(w))-y_log) + lambda_ * np.sum(np.linalg.norm(w)), M)
         w = w - gamma*grad
+    loss = logistic_regularized_loss(y, tx, w, lambda_)
     return w, loss
