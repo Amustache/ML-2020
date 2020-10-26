@@ -60,3 +60,27 @@ def invalidToMean(tx):
         res[:,i][res[:,i] == -999] = means[i]
 
     return res
+
+def displayFeatures(tx):
+    M, N = tx.shape
+    ptX = modifyCSV(tx)
+    for i in range(2, N):
+        ax = plt.subplot()
+        plt.scatter(np.arange(M), ptX[:,i])
+        plt.title("Feature "+str(i-1))
+        plt.show()
+
+def computeCorrelation(tx):
+    M, N = tx.shape
+    ptX = modifyCSV(tx)
+    for i in range(2, N-1):
+        for j in range(i+1, N):
+            mean_x = np.mean(ptX[:,i])
+            mean_y = np.mean(ptX[:,j])
+            r = np.divide(np.sum(np.multiply(np.subtract(ptX[:,i], mean_x), np.subtract(ptX[:,j], mean_y))), np.multiply(np.sqrt(np.sum(np.power(np.subtract(ptX[:,i], mean_x),2))), np.sqrt(np.sum(np.power(np.subtract(ptX[:,j], mean_y),2)))))
+            if (r > 0.9):
+                print("Correlation between "+str(i-1)+" and "+str(j-1)+" :")
+                print(r)
+            if (r < -0.9):
+                print("Correlation between "+str(i-1)+" and "+str(j-1)+" :")
+                print(r)
