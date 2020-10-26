@@ -94,3 +94,7 @@ def is_outlier(tx, thresh=3.5):
     modified_z_score = 0.6745 * diff / med_abs_deviation
 
     return modified_z_score <= thresh
+
+def augmentData(tx):
+    M, N = tx.shape
+    return np.concatenate((np.ones((M, 1)), tx, np.sin(tx), np.cos(tx)), axis=1)
