@@ -21,7 +21,7 @@ def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=Non
     tX = featureRemoval(tX)
 
     # Augment features
-    M,N = tX.shape
+    # M,N = tX.shape
     # tX = np.concatenate((np.ones((M,1)),tX, np.sin(tX), np.cos(tX)), axis=1)
 
     # Tunning
