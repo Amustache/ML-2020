@@ -21,8 +21,8 @@ def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=Non
     tX = featureRemoval(tX)
 
     # Augment features
-    # M,N = tX.shape
-    # tX = np.concatenate((np.ones((M,1)),tX, np.sin(tX), np.cos(tX)), axis=1)
+    M,N = tX.shape
+    tX = np.concatenate((np.ones((M,1)),tX, np.sin(tX), np.cos(tX)), axis=1)
 
     # Tunning
     if not lambda_:
@@ -60,8 +60,14 @@ if __name__ == "__main__":
     print("-" * 10)
     weights, loss = model(y, tX)
 
+    # Replace invalid values with mean of valid values and standardize
+    tX = modifyCSV(tX)
+
+    # Remove features due to correlation
+    tX = featureRemoval(tX)
+
     # Metrics
-    F1, accuracy = metrics(y, predict_labels(weights, tX))
+    F1, accuracy = metrics(y, predict_labels(weights[1:31], tX))
     print("F1-score: {}, accuracy: {}.".format(F1, accuracy))
     print("-" * 10)
 
@@ -69,7 +75,13 @@ if __name__ == "__main__":
     print ("Generating predictions for {}.".format(test_path))
     print("-" * 10)
     _, tX_test, ids_test = load_csv_data(test_path)
-    y_pred = predict_labels(weights, tX_test)
+
+    # Replace invalid values with mean of valid values and standardize
+    tX_test = modifyCSV(tX_test)
+
+    # Remove features due to correlation
+    tX_test = featureRemoval(tX_test)
+    y_pred = predict_labels(weights[1:31], tX_test)
 
     # Export predictions
     print("Exporting predictions to {}.".format(output_path))
