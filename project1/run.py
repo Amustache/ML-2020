@@ -18,10 +18,13 @@ def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=Non
     # tX_stand, tx_mean, tx_std = standardize(tX)
     tX_stand = standardizeValues(tX)
 
-    # Replacing odd (outliers) values with mean, column-wize
+    # Replacing invalid values with mean, column-wize
     tX_stand = invalidToMean(tX_stand)
     # for i in range(tX_stand.shape[1]):
     #     tX_stand[:, i][np.where(tX_stand[:, i] == -999)] = tx_mean[i]
+
+    # Replacing outliers with mean
+    
 
     # Tunning
     if not lambda_:
@@ -59,16 +62,16 @@ if __name__ == "__main__":
     print("-" * 10)
     weights, loss = model(y, tX)
 
+    # Metrics
+    F1, accuracy = metrics(y, predict_labels(weights, tX))
+    print("F1-score: {}, accuracy: {}.".format(F1, accuracy))
+    print("-" * 10)
+
     # Generating predictions
     print ("Generating predictions for {}.".format(test_path))
     print("-" * 10)
-    y_test, tX_test, ids_test = load_csv_data(test_path)
+    _, tX_test, ids_test = load_csv_data(test_path)
     y_pred = predict_labels(weights, tX_test)
-
-    # Metrics
-    F1, accuracy = metrics(y_test, y_pred)
-    print("F1-score: {}, accuracy: {}.".format(F1, accuracy))
-    print("-" * 10)
 
     # Export predictions
     print("Exporting predictions to {}.".format(output_path))
