@@ -84,3 +84,13 @@ def computeCorrelation(tx):
             if (r < -0.9):
                 print("Correlation between "+str(i-1)+" and "+str(j-1)+" :")
                 print(r)
+
+def is_outlier(tx, thresh=3.5):
+    median = np.median(tx, axis=0)
+    diff = np.sum((tx - median)**2, axis=-1)
+    diff = np.sqrt(diff)
+    med_abs_deviation = np.median(diff)
+
+    modified_z_score = 0.6745 * diff / med_abs_deviation
+
+    return modified_z_score <= thresh

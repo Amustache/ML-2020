@@ -24,7 +24,7 @@ def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=Non
     #     tX_stand[:, i][np.where(tX_stand[:, i] == -999)] = tx_mean[i]
 
     # Replacing outliers with mean
-    
+    #tX_stand = np.where(is_outlier(tX_stand))
 
     # Tunning
     if not lambda_:
