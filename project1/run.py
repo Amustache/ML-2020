@@ -59,15 +59,17 @@ if __name__ == "__main__":
     print("Generating model.")
     print("-" * 10)
     weights, loss = model(y, tX)
+    M,N = tX.shape
 
     # Replace invalid values with mean of valid values and standardize
     tX = modifyCSV(tX)
 
     # Remove features due to correlation
     tX = featureRemoval(tX)
+    tX = np.concatenate((np.ones((M,1)),tX, np.sin(tX), np.cos(tX)), axis=1)
 
     # Metrics
-    F1, accuracy = metrics(y, predict_labels(weights[1:31], tX))
+    F1, accuracy = metrics(y, predict_labels(weights, tX))
     print("F1-score: {}, accuracy: {}.".format(F1, accuracy))
     print("-" * 10)
 
@@ -75,13 +77,15 @@ if __name__ == "__main__":
     print ("Generating predictions for {}.".format(test_path))
     print("-" * 10)
     _, tX_test, ids_test = load_csv_data(test_path)
+    M_test, N_test = tX_test.shape
 
     # Replace invalid values with mean of valid values and standardize
     tX_test = modifyCSV(tX_test)
 
     # Remove features due to correlation
     tX_test = featureRemoval(tX_test)
-    y_pred = predict_labels(weights[1:31], tX_test)
+    tX_test = np.concatenate((np.ones((M_test,1)),tX_test, np.sin(tX_test), np.cos(tX_test)), axis=1)
+    y_pred = predict_labels(weights, tX_test)
 
     # Export predictions
     print("Exporting predictions to {}.".format(output_path))
