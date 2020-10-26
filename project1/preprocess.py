@@ -28,6 +28,20 @@ def standardizeValues(tx):
     return std_tx
 
 
+def featureRemoval(tX):
+    # Remove features 28 due to correlation
+    # tX = np.delete(tX, 29, axis=1)
+    tX[:, 29] = 0
+    # Remove feature 21 due to it being categorical
+    # tX = np.delete(tX, 22, axis=1)
+    tX[:, 22] = 0
+    # Remove features 20 due to correlation
+    # tX = np.delete(tX, 21, axis=1)
+    tX[:, 21] = 0
+
+    return tX
+
+
 def standardize(x):
     """ Standardize the original data set.
 

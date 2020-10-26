@@ -14,21 +14,19 @@ def model(y, tX, k=10, l_st=-3.5, l_en=-2.5, l_space=100, lambda_=None, save=Non
     print("Data preprocessing.")
     print("-" * 10)
 
-    # Standardization
-    # tX_stand, tx_mean, tx_std = standardize(tX)
-    tX_stand = standardizeValues(tX)
+    # Replace invalid values with mean of valid values and standardize
+    tX = modifyCSV(tX)
 
-    # Replacing invalid values with mean, column-wize
-    tX_stand = invalidToMean(tX_stand)
-    # for i in range(tX_stand.shape[1]):
-    #     tX_stand[:, i][np.where(tX_stand[:, i] == -999)] = tx_mean[i]
+    # Remove features due to correlation
+    tX = featureRemoval(tX)
 
-    # Replacing outliers with mean
-    #tX_stand = np.where(is_outlier(tX_stand))
+    # Augment features
+    M,N = tX.shape
+    # tX = np.concatenate((np.ones((M,1)),tX, np.sin(tX), np.cos(tX)), axis=1)
 
     # Tunning
     if not lambda_:
-        lambda_ = cross_validate_ridge_regression(y, tX_stand, k, l_st, l_en, l_space)
+        lambda_ = cross_validate_ridge_regression(y, tX, k, l_st, l_en, l_space)
 
     # Learning
     weights, loss = ridge_regression(y, tX, lambda_)
