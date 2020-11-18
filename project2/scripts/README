@@ -1,0 +1,8 @@
+Setup :
+
+    * Create new environment with python 3.7 (e.g. conda create -n <name> python=3.7)
+    * Run : pip install -r requirements.txt
+
+Help :
+    * python v_parser.py -h
+    * python youtube_parser.py -h
