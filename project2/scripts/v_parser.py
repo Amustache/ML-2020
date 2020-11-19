@@ -4,6 +4,13 @@ import os
 import sys
 
 def checkIfFoldersExists(output):
+    """ Check if folder used to save images exist, created them if not.
+
+    Args:
+        output: path of the folder where the images will be saved.
+    Return:
+        Nothing. Folder which didn't exist are created.
+    """
     cwd = os.getcwd()
     folders = output.split("/")
     for f in folders:
@@ -16,6 +23,17 @@ def checkIfFoldersExists(output):
             os.mkdir(cwd, 0o777)
 
 def extractImages(filename, img_name, img_format, rate, output):
+    """ Extract images from a video.
+
+    Args:
+        filename: file name of the video to be extracted.
+        img_name: name of the images to saved.
+        img_format: format of the images to be saved.
+        rate: image rate to extract. If rate is 3, will save one every 3 images.
+        output: path of the folder where the images will be saved.
+    Return:
+        Nothing. Images extracted from the video will be saved in the output folder.
+    """
     checkIfFoldersExists(output)
     tmp_rate = rate
     vid = cv2.VideoCapture(filename)

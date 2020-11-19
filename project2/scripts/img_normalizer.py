@@ -161,12 +161,16 @@ if __name__ == "__main__":
         os.mkdir(crop_dir, 0o777)
 
     blacks = None
+    left = 0
+    right = 0
+    up = 0
+    down = 0
     if good_batch == True:
-        for i in images:
+        for i in tqdm(images):
             img = cv2.imread(os.path.join(cwd_path, i))
             if blacks == None:
                 blacks = getBlackBorders(img)
-            left, right, up, down = getFrameValues(img, blacks)
+                left, right, up, down = getFrameValues(img, blacks)
             cropBorder(img, left, right, up, down, crop_dir, 'cropped_'+i)
     else:
         for i in images:
