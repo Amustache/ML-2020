@@ -31,7 +31,7 @@ def autoencoder_training(img, ae, pretrain_optimizer, pretrain_epochs):
     ae.fit(img, img, batch_size=256, epochs=pretrain_epochs)
     ae.save_weights('ae_weights.h5')
 
-img_dir = os.path.join(os.getcwd(), 'output/sega/resized')
+img_dir = os.path.join(os.getcwd(), 'output')
 images = [f for f in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, f))]
 x_train = []
 for i in tqdm(images):

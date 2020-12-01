@@ -12,14 +12,14 @@ from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 from numpy import expand_dims
 
-def resize_sega(img_dir):
+def resize_images(img_dir, x, y):
+    img_dir = os.path.join(os.getcwd(), img_dir)
     images = [f for f in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, f))]
     for i in tqdm(images):
-        img = cv2.imread(os.path.join(img_dir, i))
-        img = cv2.resize(img, (320, 224))
-        new_img_dir = os.path.join(os.getcwd(), 'output/sega/resized')
-        name = i.split('_')
-        cv2.imwrite(os.path.join(new_img_dir, 'resized_'+name[1]), img)
+        img_path = os.path.join(img_dir, i)
+        img = cv2.imread(img_path)
+        img = cv2.resize(img, (y, x))
+        cv2.imwrite(img_path, img)
 
 def keras_augmentation(img_dir):
     img_dir = os.path.join(os.getcwd(), img_dir)
@@ -188,14 +188,24 @@ def getBlackBorders(img):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Extract images from videos')
     parser.add_argument('-ifolder', type=str, required=True, help='Folder containing images to process')
+    parser.add_argument('-b', '--blackpillars', type=bool, required=False, default=True, help='Cropped additional borders using black pillars. (default: True)')
+    parser.add_argument('-r', '--resize', type=bool, required=False, default=True, help='Resize image with -x and -y values. (default: True)')
     parser.add_argument('-f', '--iformat', type=str, required=False, default='png', help='Format of generated images. (default: png)')
     parser.add_argument('-g', '--goodbatch', type=bool, required=False, default=True, help='All images have same coordinates for black pillars. If True, will compute the black pillar coordinates only for the first image. (default: True)')
+    parser.add_argument('-x', '--x_resize', type=int, required=False, default=224, help='Resize X value of images. (default: 224)')
+    parser.add_argument('-y', '--y_resize', type=, required=False, default=320, help='Resize Y value of images. (default: 320)')
 
     args = parser.parse_args(sys.argv[1:])
+
+    resize = args.resize
+    blackpillars = args.blackpillars
 
     cwd_path = os.path.join(os.getcwd(), args.ifolder)
     img_format = args.iformat
     good_batch = args.goodbatch
+
+    x_val = args.x_resize
+    y_val = args.y_resize
 
     images = [f for f in os.listdir(cwd_path) if os.path.isfile(os.path.join(cwd_path, f)) and f.find(img_format) != -1]
 
@@ -209,16 +219,19 @@ if __name__ == "__main__":
     right = 0
     up = 0
     down = 0
-    if good_batch == True:
-        for i in tqdm(images):
-            img = cv2.imread(os.path.join(cwd_path, i))
-            if blacks == None:
+    if blackpillars == True:
+        if good_batch == True:
+            for i in tqdm(images):
+                img = cv2.imread(os.path.join(cwd_path, i))
+                if blacks == None:
+                    blacks = getBlackBorders(img)
+                    left, right, up, down = getFrameValues(img, blacks)
+                cropBorder(img, left, right, up, down, crop_dir, 'cropped_'+i)
+        else:
+            for i in images:
+                img = cv2.imread(os.path.join(cwd_path, i))
                 blacks = getBlackBorders(img)
                 left, right, up, down = getFrameValues(img, blacks)
-            cropBorder(img, left, right, up, down, crop_dir, 'cropped_'+i)
-    else:
-        for i in images:
-            img = cv2.imread(os.path.join(cwd_path, i))
-            blacks = getBlackBorders(img)
-            left, right, up, down = getFrameValues(img, blacks)
-            cropBorder(img, left, right, up, down, crop_dir)
+                cropBorder(img, left, right, up, down, crop_dir)
+    if resize == True:
+        resize_images(cwd_path, x_val, y_val)
