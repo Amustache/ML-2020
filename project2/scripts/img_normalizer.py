@@ -209,7 +209,7 @@ if __name__ == "__main__":
 
     images = [f for f in os.listdir(cwd_path) if os.path.isfile(os.path.join(cwd_path, f)) and f.find(img_format) != -1]
 
-    crop_dir = os.path.join(cwd_path, "cropped/")
+    crop_dir = cwd_path
     # If directory doesn't exist, create it
     if (os.path.isdir(crop_dir) == False):
         os.mkdir(crop_dir, 0o777)
@@ -226,12 +226,12 @@ if __name__ == "__main__":
                 if blacks == None:
                     blacks = getBlackBorders(img)
                     left, right, up, down = getFrameValues(img, blacks)
-                cropBorder(img, left, right, up, down, crop_dir, 'cropped_'+i)
+                cropBorder(img, left, right, up, down, crop_dir, i)
         else:
             for i in images:
                 img = cv2.imread(os.path.join(cwd_path, i))
                 blacks = getBlackBorders(img)
                 left, right, up, down = getFrameValues(img, blacks)
-                cropBorder(img, left, right, up, down, crop_dir)
+                cropBorder(img, left, right, up, down, crop_dir, i)
     if resize == True:
         resize_images(cwd_path, x_val, y_val)
