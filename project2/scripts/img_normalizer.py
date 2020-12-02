@@ -2,6 +2,7 @@ import argparse
 import cv2
 import numpy as np
 import os
+from tqdm import tqdm
 import sys
 
 from tqdm import tqdm
