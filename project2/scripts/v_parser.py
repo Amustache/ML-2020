@@ -43,7 +43,7 @@ def extractImages(filename, img_name, img_format, rate, output):
         if ret == False:
             break
         if tmp_rate == 0:
-            cv2.imwrite(output+img_name+str(i)+'.'+img_format, frame)
+            cv2.imwrite(os.path.join(output, img_name+str(i)+'.'+img_format), frame)
             tmp_rate = rate
             i = i+1
         else:

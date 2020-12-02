@@ -67,7 +67,7 @@ def cropBorder(img, left, right, up, down, crop_path, img_name):
     """
 
     crop = img[up:down, left:right]
-    cv2.imwrite(crop_path+img_name, crop)
+    cv2.imwrite(os.path.join(crop_path, img_name), crop)
 
 def getXMedianValue(img, y, x, w):
     """ Get the median value of pixels on the X axis.
@@ -189,21 +189,21 @@ def getBlackBorders(img):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Extract images from videos')
     parser.add_argument('-ifolder', type=str, required=True, help='Folder containing images to process')
-    parser.add_argument('-b', '--blackpillars', type=bool, required=False, default=True, help='Cropped additional borders using black pillars. (default: True)')
-    parser.add_argument('-r', '--resize', type=bool, required=False, default=True, help='Resize image with -x and -y values. (default: True)')
+    parser.add_argument('-nc', '--no-crop', type=bool, required=False, default=False, help='Do not crop additional borders using black pillars.')
+    parser.add_argument('-nr', '--no-resize', type=bool, required=False, default=False, help='Do not resize image with -x and -y values. (default: True)')
     parser.add_argument('-f', '--iformat', type=str, required=False, default='png', help='Format of generated images. (default: png)')
-    parser.add_argument('-g', '--goodbatch', type=bool, required=False, default=True, help='All images have same coordinates for black pillars. If True, will compute the black pillar coordinates only for the first image. (default: True)')
+    parser.add_argument('-all', '--all-blackpillars', type=bool, required=False, default=False, help='Images don\'t have same coordinates for black pillars, compute the black pillar coordinates for all images.')
     parser.add_argument('-x', '--x_resize', type=int, required=False, default=224, help='Resize X value of images. (default: 224)')
-    parser.add_argument('-y', '--y_resize', type=, required=False, default=320, help='Resize Y value of images. (default: 320)')
+    parser.add_argument('-y', '--y_resize', type=int, required=False, default=320, help='Resize Y value of images. (default: 320)')
 
     args = parser.parse_args(sys.argv[1:])
 
-    resize = args.resize
-    blackpillars = args.blackpillars
+    resize = not(args.no_resize)
+    blackpillars = not(args.no_crop)
 
     cwd_path = os.path.join(os.getcwd(), args.ifolder)
     img_format = args.iformat
-    good_batch = args.goodbatch
+    good_batch = not(args.all_blackpillars)
 
     x_val = args.x_resize
     y_val = args.y_resize
