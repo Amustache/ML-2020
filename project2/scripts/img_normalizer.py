@@ -5,14 +5,6 @@ import os
 from tqdm import tqdm
 import sys
 
-from tqdm import tqdm
-from keras.preprocessing.image import ImageDataGenerator
-
-from matplotlib import pyplot
-from keras.preprocessing.image import img_to_array
-from keras.preprocessing.image import load_img
-from numpy import expand_dims
-
 def resize_images(img_dir, x, y):
     img_dir = os.path.join(os.getcwd(), img_dir)
     images = [f for f in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, f))]
@@ -21,34 +13,6 @@ def resize_images(img_dir, x, y):
         img = cv2.imread(img_path)
         img = cv2.resize(img, (y, x))
         cv2.imwrite(img_path, img)
-
-def keras_augmentation(img_dir):
-    img_dir = os.path.join(os.getcwd(), img_dir)
-    images = [f for f in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, f))]
-    for i in tqdm(images):
-        img = load_img(os.path.join(img_dir, i))
-        img = img_to_array(img)
-        img = expand_dims(img, axis=0)
-
-        aug = ImageDataGenerator(
-            rotation_range=0,
-            zoom_range=0.15,
-            width_shift_range=0.2,
-            height_shift_range=0.2,
-            shear_range=0.15,
-            horizontal_flip=True,
-            fill_mode='nearest')
-        new_img_dir = os.path.join(os.path.join(os.getcwd(), 'output/sega/'), 'augmented/')
-        name = i.split('_')
-        name = name[1].split('.png')
-        imgGen = aug.flow(img, batch_size=1, save_to_dir=new_img_dir, save_prefix='aug_'+name[0], save_format='png')
-        total = 0
-        for image in imgGen:
-            total += 1
-            if total == 9:
-                total = 0
-                break
-
 
 def cropBorder(img, left, right, up, down, crop_path, img_name):
     """ Crop image with the given values.
