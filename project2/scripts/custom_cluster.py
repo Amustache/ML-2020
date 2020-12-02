@@ -1,4 +1,5 @@
-import kera.backend as K
+import keras.backend as K
+from keras.engine.topology import Layer
 
 class ClusteringLayer(Layer):
 
@@ -18,7 +19,7 @@ class ClusteringLayer(Layer):
         self.clusters = self.add_weight((self.n_clusters, input_dim), initializer='glorot_uniform', name='clusters')
         if self.initial_weights is not None:
             self.set_weights(self.initial_weights)
-            sel self.initial_weights)
+            del self.initial_weights
         self.built = True
 
     def call(self, inputs, **kwargs):
