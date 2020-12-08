@@ -13,8 +13,11 @@ IF EXIST output\test\NUL (
 ) ELSE (
     echo Getting testig data
     python youtube_parser.py -url "https://www.youtube.com/watch?v=f_M5ZTSSdVc" -i "test_snes" -o "output/test"
-    echo "Resizing testing data"
+    python youtube_parser.py -url "https://www.youtube.com/watch?v=WCzPGddOWqc" -r 30 -i "test_gba" -o "output/test"
     echo Resizing testing data
     python img_normalizer.py -ifolder "output/test" -x 224 -y 320
+    python youtube_parser.py -url "https://www.youtube.com/watch?v=U5f-ri5dtEU&ab_channel=wizzgamer" -i "test_sega" -o "output/test"
+    echo Resizing testing data
+    python img_normalizer.py -ifolder "output/test" -nc True -x 224 -y 320
     echo Done
 )

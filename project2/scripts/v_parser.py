@@ -60,4 +60,4 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', type=str, required=False, default='output/', help='Output folder for images. (default: output/)')
 
     args = parser.parse_args(sys.argv[1:])
-    extractImages(args.fname, args.iformat, args.rate, args.output)
+    extractImages(args.fname, args.img, args.iformat, args.rate, args.output)
