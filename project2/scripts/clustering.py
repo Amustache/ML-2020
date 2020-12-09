@@ -2,13 +2,12 @@ import numpy as np
 import os
 
 from autoencoder import autoencoder_generate
+from custom_cluster import ClusteringLayer
 from keras.initializers import VarianceScaling
 from keras.layers import Input
 from keras.models import Model
 from keras.optimizers import SGD
-from keras.preprocessing.image import img_to_array
-from keras.preprocessing.image import save_img
-from keras.preprocessing.image import load_img
+from keras.preprocessing.image import img_to_array, load_img, save_img
 from sklearn.cluster import KMeans
 from tqdm import tqdm
 
