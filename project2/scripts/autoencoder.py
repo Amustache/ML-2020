@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import random
 
 from keras.initializers import VarianceScaling
 from keras.layers import Dense, Input
@@ -38,7 +39,7 @@ def autoencoder_generate(dims, act='relu', init='glorot_uniform'):
     decoded = x
     return Model(inputs=input_img, outputs=decoded, name='AE'), Model(inputs=input_img, outputs=encoded, name='encoder')
 
-def autoencoder_training(img, ae, pretrain_optimizer, pretrain_epochs, file_prefix):
+def autoencoder_training(img, ae, pretrain_optimizer, pretrain_epochs):
     """ Train autoencoder with a given optimizer and a number of epochs.
     
     Args:
@@ -46,7 +47,6 @@ def autoencoder_training(img, ae, pretrain_optimizer, pretrain_epochs, file_pref
         ae: Autoencoder model to train.
         pretrain_optimizer: String (name of optimizer) or optimizer instance to be used.
         pretrain_epochs: Number of epochs to train the model.
-        file_prefix: String prefix for the weights file which will be saved.
 
     Return:
         Nothing. Saves the weights of the trained autoencoder in the file ae_weights.h5
@@ -54,7 +54,7 @@ def autoencoder_training(img, ae, pretrain_optimizer, pretrain_epochs, file_pref
     train_X, valid_X, train_ground, valid_ground = train_test_split(img, img, test_size=0.2, random_state=13) 
     ae.compile(optimizer=pretrain_optimizer, loss='mse')
     ae_train = ae.fit(train_X, train_X, batch_size=128, epochs=pretrain_epochs, verbose=1, validation_data=(valid_X, valid_ground))
-    ae.save_weights(file_prefix+'_ae_weights.h5')
+    ae.save_weights('ae_weights.h5')
     loss = ae_train.history['loss']
     val_loss = ae_train.history['val_loss']
     epochs = range(pretrain_epochs)
@@ -66,10 +66,12 @@ def autoencoder_training(img, ae, pretrain_optimizer, pretrain_epochs, file_pref
     plt.ylabel("Loss")
     plt.legend()
 #    plt.show()
-    plt.savefig(file_prefix+'_loss_plot.png')
+    plt.savefig('loss_plot.png')
 
 if __name__== "__main__":
+    # Fix random seeds for reproducibility
     np.random.seed(1221)
+    random.seed(2703)
     output_dir = os.path.join(os.getcwd(), 'output')
     train_dir = os.path.join(output_dir, 'train')
     if (os.path.isdir(train_dir) == False):
@@ -86,19 +88,13 @@ if __name__== "__main__":
         x_train.append(img)
     x_train = np.asarray(x_train)
     x_train = np.divide(x_train, 255.)
-    dims1 = [x_train.shape[-1], 6500, 4000, 10000, 4480]
-#    dims2 = [10000, 3000, 6000, 2000, 3000]
+    dims = [x_train.shape[-1], 6500, 4000, 10000, 4480]
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     pretrain_optimizer = SGD(lr=1, momentum=0.9)
     pretrain_epochs = 1000
     # Create and train autoencoder
-    autoencoder1, encoder1 = autoencoder_generate(dims1, init=init)
-#    autoencoder2, encoder2 = autoencoder_generate(dims2, init=init)
+    autoencoder, encoder = autoencoder_generate(dims, init=init)
     print("Training Autoencoder")
     print("Training first model")
-    autoencoder_training(x_train, autoencoder1, pretrain_optimizer, pretrain_epochs, '1')
+    autoencoder_training(x_train, autoencoder, pretrain_optimizer, pretrain_epochs)
     print("Done training first model")
-#    x_train = encoder1.predict(x_train)
-#    print("Training second model")
-#    autoencoder_training(x_train, autoencoder2, pretrain_optimizer, pretrain_epochs, '2')
-#    print("Done training second model")

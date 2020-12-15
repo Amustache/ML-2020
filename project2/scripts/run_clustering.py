@@ -8,13 +8,21 @@ from clustering import extract_clusters, load_encoder, save_clusters
 from custom_cluster import ClusteringLayer
 from keras.initializers import VarianceScaling
 from keras.models import Model
-from sklearn.cluster import KMeans
+from keras.preprocessing.image import img_to_array, load_img
 from tqdm import tqdm
 
-#Temporary
-from keras.preprocessing.image import img_to_array, load_img
 
 def load_and_run(encoder, n_clusters, x_test, test_dir):
+    """ Load trained clustering model using weights saved in file cluster_weights.h5 and run it on given test set.
+
+    Args:
+        encoder: Trained encoder model.
+        n_clusters: Number of clusters in the trained clustering model to load.
+        x_test: Test data set.
+        test_dir: Directory containing test images.
+    Return:
+
+    """
     clustering_layer = ClusteringLayer(n_clusters, name='clustering')(encoder.output)
     model = Model(inputs=encoder.input, outputs=clustering_layer)
     model.load_weights('cluster_weights.h5')
@@ -56,21 +64,9 @@ if __name__== "__main__":
         x_test_names.append(i)
     x_test = np.asarray(x_test)
     x_test = np.divide(x_test, 255.)
-    
-    train_dir = os.path.join(os.getcwd(), 'output')
-    train_dir = os.path.join(train_dir, 'train')
-    train_images = [f for f in os.listdir(train_dir) if os.path.isfile(os.path.join(train_dir, f))]
-    x_train = []
-    for i in tqdm(train_images):
-        img = load_img(os.path.join(train_dir, i), color_mode='grayscale')
-        img = img_to_array(img)
-        img = np.asarray(img)
-        img = img.flatten()
-        x_train.append(img)
-    x_train = np.asarray(x_train)
-    x_train = np.divide(x_train, 255.)
+
     print('Load Autoencoder from weights')
-    dims = [x_train.shape[-1], 2000, 10000, 2000, 12000, 1120]
+    dims = [17920, 6500, 4000, 10000, 4480]
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     encoder = load_encoder(dims, init)
 

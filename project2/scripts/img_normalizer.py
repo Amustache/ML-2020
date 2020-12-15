@@ -6,6 +6,16 @@ from tqdm import tqdm
 import sys
 
 def resize_images(img_dir, x, y):
+    """ Resize images given a new x and y value.
+
+    Args:
+        img_dir: Directory containing images to resize.
+        x: New x value for the resize.
+        y: New y value for the resize.
+    Return:
+        Nothing.
+        Resized images will overwrite old images.
+    """
     img_dir = os.path.join(os.getcwd(), img_dir)
     images = [f for f in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, f))]
     for i in tqdm(images):

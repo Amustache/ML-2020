@@ -2,18 +2,25 @@ import numpy as np
 import os
 
 from autoencoder import autoencoder_generate
-from IPython.display import Image
 from keras.initializers import VarianceScaling
-from keras.preprocessing.image import array_to_img, img_to_array, load_img
+from keras.preprocessing.image import img_to_array, load_img
 from keras.utils import plot_model
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
-def load_autoencoder(dims, init, file_prefix):
+def load_autoencoder(dims, init):
+    """ Load trained autoencoder and encoder.
+
+    Args:
+        dims: Dimensions of the autoencoder layers.
+        init: Initializer for the kernel weights matrix. Default: Glorot uniform initializer (Xavier uniform initializer).
+    Return:
+        The trained autoencoder and encoder models.
+    """
     # Generate autoencoder and encoder
     ae, encoder = autoencoder_generate(dims, init=init)
     # Load save autoencoder weights
-    ae.load_weights(file_prefix+'_ae_weights.h5')
+    ae.load_weights('ae_weights.h5')
     # Extract encoder weights from layers 1 to 4
     encoder_weights = ae.layers[1].get_weights()
     for e_i in range(2, len(dims)):
@@ -22,11 +29,21 @@ def load_autoencoder(dims, init, file_prefix):
     encoder.set_weights(encoder_weights)
     return ae, encoder
 
-def plot_autoencoder_outputs(autoencoder, n, dims, x_test, file_prefix):
+def plot_autoencoder_outputs(autoencoder, n, dims, x_test):
+    """ Plot a sample of input and output images of the autoencoder.
+
+    Args:
+        autoencoder: Trained autoencoder model.
+        n: Number of samples to show.
+        dims: Dimensions of the reconstructed images, shape=().
+        x_test: Original images used as input for the autoencoder.
+
+    Return:
+        Nothing.
+        Saves the plot containing original and reconstructed images in file autoencoder_results.png
+    """
     decoded_imgs = autoencoder.predict(x_test)
 
-    # number of example digits to show
-    n = 6
     plt.figure(figsize=(10, 4.5))
     for i in range(n):
         # plot original image
@@ -48,9 +65,9 @@ def plot_autoencoder_outputs(autoencoder, n, dims, x_test, file_prefix):
         if i == n/2:
             ax.set_title('Reconstructed Images')
     #plt.show()
-    plt.savefig(file_prefix+'_autoencoder_results.png')
+    plt.savefig('autoencoder_results.png')
+    # Use this to generate autoencoder model image
     #plot_model(autoencoder, show_shapes=True)
-    #Image(filename='autoencoder_arch.png')
 
 if __name__== "__main__":
     output_dir = os.path.join(os.getcwd(), 'output')
@@ -60,8 +77,7 @@ if __name__== "__main__":
         exit()
     # Setup train data for autoencoder
     print('Setup testing data')
-    dims1 = [17920, 6500, 4000, 10000, 4480]
-    #dims1 = [17920, 6500, 4000, 10000, 3000]
+    dims = [17920, 6500, 4000, 10000, 4480]
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     test_images = [f for f in os.listdir(test_dir) if os.path.isfile(os.path.join(test_dir, f))]
     x_test = []
@@ -78,8 +94,5 @@ if __name__== "__main__":
     x_test = np.divide(x_test, 255.)
 
     print('Load Autoencoder from weights')
-    ae, encoder = load_autoencoder(dims1, init, '1')
-    plot_autoencoder_outputs(ae, 10, (112,160), x_test, '1')
-    #x_test = encoder.predict(x_test)
-    #ae, encoder = load_autoencoder(dims2, init, '2')
-    #plot_autoencoder_outputs(ae, 10, (100,100), x_test, '2')
+    ae, encoder = load_autoencoder(dims, init)
+    plot_autoencoder_outputs(ae, 6, (112,160), x_test)
