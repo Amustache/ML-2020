@@ -117,7 +117,7 @@ if __name__== "__main__":
         x_train.append(img)
     x_train = np.asarray(x_train)
     x_train = np.divide(x_train, 255.)
-    dims = [x_train.shape[-1], 500, 500, 2000, 10]
+    dims = [x_train.shape[-1], 1400, 13000, 2000, 20000, 1120]
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     test_images = [f for f in os.listdir(test_dir) if os.path.isfile(os.path.join(test_dir, f))]
     x_test = []

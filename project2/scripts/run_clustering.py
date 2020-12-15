@@ -70,7 +70,7 @@ if __name__== "__main__":
     x_train = np.asarray(x_train)
     x_train = np.divide(x_train, 255.)
     print('Load Autoencoder from weights')
-    dims = [x_train.shape[-1], 500, 500, 2000, 10]
+    dims = [x_train.shape[-1], 2000, 10000, 2000, 12000, 1120]
     init = VarianceScaling(scale=1. / 3., mode='fan_in', distribution='uniform')
     encoder = load_encoder(dims, init)
 
