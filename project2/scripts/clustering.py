@@ -10,6 +10,7 @@ from keras.models import Model
 from keras.optimizers import SGD
 from keras.preprocessing.image import img_to_array, load_img, save_img
 from sklearn.cluster import KMeans
+from tensorflow.random import set_seed
 from tqdm import tqdm
 
 def clustering_training(x, n_clusters, encoder, batch_size):
@@ -60,14 +61,14 @@ def clustering_training(x, n_clusters, encoder, batch_size):
     model.save_weights('cluster_weights.h5')
     return model
 
-def test_clustering(model, x_test, img_dir, x_test_names):
+def test_clustering(model, x_test, x_test_names, img_dir):
     """ Run the trained clustering model on a data set and creates folders for each cluster.
     
     Args:
         model: Trained model which encodes and clusters images.
         x_test: Test data set of images with shape().
-        img_dir: Directory containing the images which go through the model.
         x_test_names: Names of the images in the data set.
+        img_dir: Directory containing the images which go through the model.
 
     Return:
         Nothing.
@@ -171,6 +172,8 @@ if __name__== "__main__":
     # Fix random seeds for reproducibility
     np.random.seed(1221)
     random.seed(2703)
+    set_seed(3241)
+    os.environ['PYTHONHASHSEED']=str(4128)
     # Directories path
     output_dir = os.path.join(os.getcwd(), 'output')
     train_dir = os.path.join(output_dir, 'train')
