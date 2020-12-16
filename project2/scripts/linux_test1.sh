@@ -21,7 +21,10 @@ then
 else
     echo "Getting testing data"
     python youtube_parser.py -url "https://www.youtube.com/watch?v=f_M5ZTSSdVc" -i "test_snes" -o "output/test"
+    echo "Crop testing data"
+    python img_normalizer.py -ifolder "output/test" -nr True
+    python youtube_parser.py -url "https://www.youtube.com/watch?v=U5f-ri5dtEU&ab_channel=wizzgamer" -i "test_sega" -o "output/test"
     echo "Resizing testing data"
-    python img_normalizer.py -ifolder "output/test" -x 112 -y 160
+    python img_normalizer.py -ifolder "output/test" -nc True -x 112 -y 160
     echo "Done"
 fi

@@ -22,6 +22,7 @@ output = args.output
 
 youtube = pytube.YouTube(url)
 video = youtube.streams.get_highest_resolution()
-video.download(os.path.join(os.getcwd(), 'videos'))
+v_title = (video.title).replace(" ", "_").replace("/", "")
+video.download(os.path.join(os.getcwd(), 'videos'), filename=v_title)
 
-extractImages('videos/'+video.title+'.'+video.subtype, img_name, img_format, rate, output)
+extractImages('videos/'+v_title+'.'+video.subtype, img_name, img_format, rate, output)
