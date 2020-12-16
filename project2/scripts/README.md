@@ -8,6 +8,19 @@ Install requirements :
     
     pip install -r requirements.txt
 
+## Libraries
+
+The main external libraries used for this project are :
+
+- Keras : version 2.4.3
+- Tensorflow : version 2.3.1
+- Sklearn : version 0.0
+- Pytube : version 10.0.0
+- Matplotlib : version 3.3.2
+- OpenCV : version 4.4.0.46
+
+For the details of all libraries used, the file **`requirements.txt`** contains the full list.
+
 # Data collection
 Data collection is done by using the scripts **`v_parser.py`** and **`youtube_parser.py`**.
 The **`v_parser.py`** script one will parse a video in a local folder and extract the images from it.
