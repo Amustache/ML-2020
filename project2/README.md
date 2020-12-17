@@ -17,12 +17,12 @@ Explanatory paper is [available here](./report.pdf).
 ### Libraries used
 The main external libraries used for this project are :
 
-- Keras: version 2.4.3
-- Tensorflow: version 2.3.1
-- Sklearn: version 0.0
-- Pytube: version 10.0.0
-- Matplotlib: version 3.3.2
-- OpenCV: version 4.4.0.46
+- For Machine Learning training, Keras: version 2.4.3
+- For Machine Learning training, Tensorflow: version 2.3.1
+- For Machine Learning training, Sklearn: version 0.0
+- For the data collection, Pytube: version 10.0.0
+- For plotting results, Matplotlib: version 3.3.2
+- For image processing, OpenCV: version 4.4.0.46
 
 For the details of all libraries used, the file **`requirements.txt`** contains the full list.
 
